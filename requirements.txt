@@ -1,0 +1,12 @@
+pandas
+numpy
+ccxt
+scikit-learn
+xgboost
+statsmodels
+arch
+pmdarima
+plotly
+streamlit
+cachetools
+python-dotenv
