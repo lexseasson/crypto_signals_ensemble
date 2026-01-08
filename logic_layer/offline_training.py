@@ -15,6 +15,9 @@ from sklearn.ensemble import RandomForestClassifier
 
 from data_layer.data_fetcher import fetch_ohlcv_data
 from .indicators import calculate_all_indicators
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 
 def load_historical_dataset(
