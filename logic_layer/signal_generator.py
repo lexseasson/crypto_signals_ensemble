@@ -2,8 +2,13 @@ import pandas as pd
 from typing import Tuple, Dict, Any
 from .indicators import calculate_all_indicators
 from .models import model_ml_signal, model_arima_forecast, model_garch_volatility
+from .risk_metrics import calculate_risk_metrics
 
-def generate_ensemble_signals(data: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, Any]]:
+def generate_ensemble_signals(
+    data: pd.DataFrame,
+    timeframe: str = "1h",
+    risk_free_rate: float = 0.02,
+) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """
     Genera un ensamble de señales de trading combinando indicadores técnicos y modelos.
 
@@ -11,9 +16,9 @@ def generate_ensemble_signals(data: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[st
         data (pd.DataFrame): DataFrame con datos OHLCV.
 
     Returns:
-        Tuple[pd.DataFrame, Dict[str, Any]]: 
+        Tuple[pd.DataFrame, Dict[str, Any]]:
             - DataFrame con todos los indicadores y señales añadidas.
-            - Diccionario con resultados de modelos (predicciones de ARIMA y GARCH).
+            - Diccionario con resultados de modelos y métricas.
     """
     
     # 1. Cálculo de Indicadores Técnicos
@@ -59,4 +64,14 @@ def generate_ensemble_signals(data: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[st
     df_signals.loc[df_signals['Ensemble_Score'] >= 2, 'Signal_Ensemble'] = 1 # Compra fuerte
     df_signals.loc[df_signals['Ensemble_Score'] <= -2, 'Signal_Ensemble'] = -1 # Venta fuerte
     
+    risk_metrics = calculate_risk_metrics(
+        df_signals,
+        signal_column='Signal_Ensemble',
+        price_column='close',
+        timeframe=timeframe,
+        risk_free_rate=risk_free_rate,
+    )
+
+    model_results['risk_metrics'] = risk_metrics.to_dict()
+
     return df_signals, model_results

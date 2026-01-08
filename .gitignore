@@ -1,6 +1,13 @@
-".env" 
-"__pycache__/" 
-"*.pyc" 
-".env" 
-"__pycache__/" 
-"*.pyc" 
+# Environment configuration
+.env
+.env.*
+!.env.example
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Model artifacts generated offline
+models/".env" 
